@@ -106,7 +106,7 @@ class GarminClient:
         if un_sync_id_list == None or len(un_sync_id_list) == 0:
             logger.warning("has no un sync garmin activities.")
             exit()
-        logger.warning(f"has {len(un_sync_id_list.size)} un sync garmin activities.")
+        logger.warning(f"has {len(un_sync_id_list)} un sync garmin activities.")
         for un_sync_id in un_sync_id_list:
             try:
                 file = self.downloadFitActivity(un_sync_id)

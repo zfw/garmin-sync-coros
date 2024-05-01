@@ -5,7 +5,7 @@ import json
 import hashlib
 import logging
 
-from config import COROS_FIT_DIR
+from config import SYNC_CONFIG, COROS_FIT_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -163,25 +163,29 @@ class CorosClient:
             for activitiyInfo in activitiyInfoList:
                 labelId = activitiyInfo["labelId"]
                 sportType = activitiyInfo["sportType"]
+                startTime = int(f"{activitiyInfo['startTime']}000")
                 activityDownloadUrl = self.getDownloadUrl(labelId, sportType)
                 if (activityDownloadUrl):
-                    urlList.append((labelId, activityDownloadUrl)) # 已元祖形式存储
+                    urlList.append((labelId, activityDownloadUrl, startTime)) # 已元祖形式存储
             if len(urlList) > 0:
                 all_urlList.extend(urlList)
             else:
                 return all_urlList
-            pageNumber += 100
+            pageNumber += 1
         
     @staticmethod
-    def find_url_from_id(list, id): 
+    def find_url_from_id(list, id):
+        # 开始同步时间
+        sync_start_time_ts = int(SYNC_CONFIG["COROS_START_TIME"]) if SYNC_CONFIG["COROS_START_TIME"].strip() else 0
         for item in list:
             if item[0] == id:
-                return item[1]
+                if item[2] > sync_start_time_ts:
+                    return item[1]
         return None
 
     def uploadToGarmin(self, garminClient, db):
         all_activities = self.getAllActivities()
-        if all_activities == None or len(all_activities) == 0:
+        if all_activities is None or len(all_activities) == 0:
             logger.warning("has no coros activities.")
             exit()
         for activity in all_activities:
@@ -189,19 +193,19 @@ class CorosClient:
             db.saveActivity(activity_id, 'coros')
 
         un_sync_id_list = db.getUnSyncActivity('coros')
-        if un_sync_id_list == None or len(un_sync_id_list) == 0:
+        if un_sync_id_list is None or len(un_sync_id_list) == 0:
             logger.warning("has no un sync coros activities.")
             exit()
-        logger.warning(f"has {len(un_sync_id_list.size)} un sync coros activities.")
+        logger.warning(f"has {len(un_sync_id_list)} un sync coros activities.")
         for un_sync_id in un_sync_id_list:
             try:
-                file_url = self.find_url_from_id(all_activities, str(un_sync_id))
-                if (file_url == None):
+                download_url = self.find_url_from_id(all_activities, str(un_sync_id))
+                if download_url is None:
                     # 未找到对应的下载链接也视为同步
-                    self.update_db_status(db, un_sync_id)
+                    logger.warning(f"coros ${un_sync_id} download url missing.")
                     continue 
                 
-                fileResponse = self.download(file_url)
+                fileResponse = self.download(download_url)
                 file_path = os.path.join(COROS_FIT_DIR, f"{un_sync_id}.fit")
                 with open(file_path, "wb") as fb:
                     fb.write(fileResponse.data)
