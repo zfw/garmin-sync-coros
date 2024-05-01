@@ -11,19 +11,10 @@ coros_path = CURRENT_DIR + os.path.sep + 'coros'
 sys.path.append(garmin_path)
 sys.path.append(coros_path)
 
-from config import DB_DIR, GARMIN_FIT_DIR, COROS_FIT_DIR
+from config import SYNC_CONFIG, DB_DIR, GARMIN_FIT_DIR, COROS_FIT_DIR
 from garmin.garmin_client import GarminClient
 from activity_db import ActivityDB
 from coros.coros_client import CorosClient
-
-# 此处无需填值，方便后面的for in根据这里的key从环境变量里面取值即可
-SYNC_CONFIG = {
-    'GARMIN_AUTH_DOMAIN': '',
-    'GARMIN_EMAIL': '',
-    'GARMIN_PASSWORD': '',
-    "COROS_EMAIL": '',
-    "COROS_PASSWORD": '',
-}
 
 
 def init(activity_db):
@@ -39,12 +30,6 @@ def init(activity_db):
 
 
 def getClient():
-    # 首先读取 面板变量 或者 github action 运行变量
-    for k in SYNC_CONFIG:
-        if os.getenv(k):
-            v = os.getenv(k)
-            SYNC_CONFIG[k] = v
-
     ## db 名称
     db_name = "activity.db"
     ## 建立DB链接
@@ -69,5 +54,15 @@ def garmin_to_cors():
     garminClient, corosClient, db = getClient()
     garminClient.upload_to_coros(corosClient, db)
 
+# 将高驰运动记录导入到佳明
+def coros_to_garmin():
+    garminClient, corosClient, db = getClient()
+    corosClient.uploadToGarmin(garminClient, db)
+    
 if __name__ == "__main__":
-    garmin_to_cors()
+    arg = sys.argv[1]
+    logger.warning(f"RUNNING MODE: {arg}")
+    if arg == 'COROS':
+        coros_to_garmin()
+    else:
+        garmin_to_cors()
