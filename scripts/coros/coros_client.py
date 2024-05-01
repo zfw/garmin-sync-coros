@@ -188,6 +188,7 @@ class CorosClient:
         if all_activities is None or len(all_activities) == 0:
             logger.warning("has no coros activities.")
             exit()
+        logger.warning(f"has {len(all_activities)} all activities.")
         for activity in all_activities:
             activity_id = activity[0]
             db.saveActivity(activity_id, 'coros')
