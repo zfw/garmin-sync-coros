@@ -5,7 +5,7 @@ from enum import Enum, auto
 import garth
 
 from garmin_url_dict import GARMIN_URL_DICT
-from config import GARMIN_FIT_DIR
+from config import SYNC_CONFIG, GARMIN_FIT_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -49,10 +49,20 @@ class GarminClient:
     def getAllActivities(self):
         all_activities = []
         start = 0
-        while (True):
-            activities = self.getActivities(start=start, limit=100)
-            if len(activities) > 0:
-                all_activities.extend(activities)
+        # 起始同步时间
+        sync_start_time_ts = int(SYNC_CONFIG["GARMIN_START_TIME"]) if SYNC_CONFIG["GARMIN_START_TIME"].strip() else 0
+        while True:
+            activityInfoList = self.getActivities(start=start, limit=100)
+            activityList = []
+            for activityInfo in activityInfoList:
+                beginTimestamp = activityInfo["beginTimestamp"]
+                if beginTimestamp < sync_start_time_ts:
+                    if len(activityList) > 0:
+                        all_activities.extend(activityList)
+                    return all_activities
+                activityList.append(activityInfo)
+            if len(activityList) > 0:
+                all_activities.extend(activityList)
             else:
                 return all_activities
             start += 100

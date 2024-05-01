@@ -161,12 +161,12 @@ class CorosClient:
         sync_start_time_ts = int(SYNC_CONFIG["COROS_START_TIME"]) if SYNC_CONFIG["COROS_START_TIME"].strip() else 0
         while True:
             logger.warning(f"get coros activities of pageNumber {pageNumber}.")
-            activitiyInfoList = self.getActivities(pageNumber=pageNumber, pageSize=100)
+            activityInfoList = self.getActivities(pageNumber=pageNumber, pageSize=100)
             urlList = []
-            for activitiyInfo in activitiyInfoList:
-                labelId = activitiyInfo["labelId"]
-                sportType = activitiyInfo["sportType"]
-                startTime = int(f"{activitiyInfo['startTime']}000")
+            for activityInfo in activityInfoList:
+                labelId = activityInfo["labelId"]
+                sportType = activityInfo["sportType"]
+                startTime = int(f"{activityInfo['startTime']}000")
                 # 同步起始时间之前的历史纪录不再查询及同步
                 if startTime < sync_start_time_ts:
                     if len(urlList) > 0:
