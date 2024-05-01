@@ -157,6 +157,8 @@ class CorosClient:
     def getAllActivities(self):
         all_urlList = []
         pageNumber = 1
+        # 起始同步时间
+        sync_start_time_ts = int(SYNC_CONFIG["COROS_START_TIME"]) if SYNC_CONFIG["COROS_START_TIME"].strip() else 0
         while True:
             logger.warning(f"get coros activities of pageNumber {pageNumber}.")
             activitiyInfoList = self.getActivities(pageNumber=pageNumber, pageSize=100)
@@ -165,6 +167,12 @@ class CorosClient:
                 labelId = activitiyInfo["labelId"]
                 sportType = activitiyInfo["sportType"]
                 startTime = int(f"{activitiyInfo['startTime']}000")
+                # 同步起始时间之前的历史纪录不再查询及同步
+                if startTime < sync_start_time_ts:
+                    if len(urlList) > 0:
+                        all_urlList.extend(urlList)
+                    return all_urlList
+                
                 activityDownloadUrl = self.getDownloadUrl(labelId, sportType)
                 if (activityDownloadUrl):
                     urlList.append((labelId, activityDownloadUrl, startTime)) # 已元祖形式存储
@@ -176,10 +184,8 @@ class CorosClient:
         
     @staticmethod
     def find_url_from_id(list, id):
-        # 开始同步时间
-        sync_start_time_ts = int(SYNC_CONFIG["COROS_START_TIME"]) if SYNC_CONFIG["COROS_START_TIME"].strip() else 0
         for item in list:
-            if item[0] == id and item[2] > sync_start_time_ts:
+            if item[0] == id:
                 return item[1]
         return None
 
