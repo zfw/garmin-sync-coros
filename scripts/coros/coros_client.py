@@ -157,7 +157,8 @@ class CorosClient:
     def getAllActivities(self):
         all_urlList = []
         pageNumber = 1
-        while (True & pageNumber < 2):
+        while True:
+            logger.warning(f"get coros activities of pageNumber {pageNumber}.")
             activitiyInfoList = self.getActivities(pageNumber=pageNumber, pageSize=100)
             urlList = []
             for activitiyInfo in activitiyInfoList:
@@ -178,9 +179,8 @@ class CorosClient:
         # 开始同步时间
         sync_start_time_ts = int(SYNC_CONFIG["COROS_START_TIME"]) if SYNC_CONFIG["COROS_START_TIME"].strip() else 0
         for item in list:
-            if item[0] == id:
-                if item[2] > sync_start_time_ts:
-                    return item[1]
+            if item[0] == id and item[2] > sync_start_time_ts:
+                return item[1]
         return None
 
     def uploadToGarmin(self, garminClient, db):
