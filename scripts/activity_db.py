@@ -26,7 +26,9 @@ class ActivityDB:
             query_size = len(exists_query_set)
             logger.warning(f"db saveActivity {id} {source} query_size: {query_size}")
             if query_size == 0:
-              db.execute('insert into activity_table (activity_id, activity_source) values (?, ?)', (id, source)) 
+                db.execute('insert into activity_table (activity_id, activity_source) values (?, ?)', (id, source))
+                self.saveActivity(id, source)
+                
     
     def getUnSyncActivity(self, source = 'garmin'):
         select_un_upload_sql = 'SELECT activity_id FROM activity_table WHERE is_sync = 0 AND activity_source = ?'
