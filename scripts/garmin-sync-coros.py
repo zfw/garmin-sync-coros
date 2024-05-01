@@ -60,7 +60,8 @@ def coros_to_garmin():
     corosClient.uploadToGarmin(garminClient, db)
     
 if __name__ == "__main__":
-    arg = sys.argv[1] if len(sys.argv) > 2 else 'GARMIN'
+    # 未配置第一个参数则默认按照GARMIN模式运行
+    arg = sys.argv[1] if len(sys.argv) > 1 else 'GARMIN'
     logger.warning(f"RUNNING MODE: {arg}")
     if arg == 'COROS':
         coros_to_garmin()
