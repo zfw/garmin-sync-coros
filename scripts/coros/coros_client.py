@@ -187,6 +187,7 @@ class CorosClient:
         for activity in all_activities:
             activity_id = activity[0]
             db.saveActivity(activity_id, 'coros')
+            db.saveActivity(activity_id, 'coros')
 
         un_sync_id_list = db.getUnSyncActivity('coros')
         if un_sync_id_list == None or len(un_sync_id_list) == 0:
