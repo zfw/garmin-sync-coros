@@ -11,10 +11,12 @@ env:
   GARMIN_AUTH_DOMAIN: ${{ secrets.GARMIN_AUTH_DOMAIN }}
   GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
   GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+  GARMIN_START_TIME: ${{ secrets.GARMIN_START_TIME }}
 
   ## Coros配置
   COROS_EMAIL: ${{ secrets.COROS_EMAIL }}
   COROS_PASSWORD: ${{ secrets.COROS_PASSWORD }}
+  COROS_START_TIME: ${{ secrets.COROS_START_TIME }}
 
 jobs:
   build:

@@ -178,7 +178,6 @@ class CorosClient:
     def find_url_from_id(list, id):
         # 开始同步时间
         sync_start_time_ts = int(SYNC_CONFIG["COROS_START_TIME"]) if SYNC_CONFIG["COROS_START_TIME"].strip() else 0
-        logger.warning(f"sync_start_time_ts {sync_start_time_ts}")
         for item in list:
             if item[0] == id and item[2] > sync_start_time_ts:
                 return item[1]
