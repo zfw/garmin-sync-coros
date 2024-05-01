@@ -1,5 +1,7 @@
 import os
+import logging
 
+logger = logging.getLogger(__name__)
 # 此处无需填值，方便后面的for in根据这里的key从环境变量里面取值即可
 SYNC_CONFIG = {
     'GARMIN_AUTH_DOMAIN': '',
@@ -17,6 +19,7 @@ for k in SYNC_CONFIG:
     if os.getenv(k):
         v = os.getenv(k)
         SYNC_CONFIG[k] = v
+        logger.warning(f"fill config value {k} = {len(v)} from env")
 
 # getting content root directory
 current = os.path.dirname(os.path.realpath(__file__))
