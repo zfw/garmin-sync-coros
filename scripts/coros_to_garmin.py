@@ -27,8 +27,6 @@ SYNC_CONFIG = {
 
 
 def init(activity_db):
-    if os.path.exists(os.path.join(DB_DIR, 'garmin.db')):
-        os.remove(os.path.join(DB_DIR, 'garmin.db'))
     ## 判断RQ数据库是否存在
     print(os.path.join(DB_DIR, activity_db.db_name))
     if not os.path.exists(os.path.join(DB_DIR, activity_db.db_name)):

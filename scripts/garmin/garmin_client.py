@@ -112,12 +112,12 @@ class GarminClient:
                 file_path = os.path.join(GARMIN_FIT_DIR, f"{un_sync_id}.zip")
                 with open(file_path, "wb") as fb:
                     fb.write(file)
-                logger.warning(f"uploading garmin ${un_sync_id} {file_path}.")
+                logger.warning(f"uploading garmin to coros ${un_sync_id} {file_path}.")
                 upload_result = corosClient.uploadActivity(file_path)
 
                 if upload_result == '0000':
                     db.updateSyncStatus(un_sync_id, 'garmin')
-                    logger.warning(f"sync garmin ${un_sync_id} {file_path} success.")
+                    logger.warning(f"sync garmin to coros ${un_sync_id} {file_path} success.")
             except Exception as err:
                 print(err)
                 db.updateExceptionSyncStatus(un_sync_id, 'garmin')

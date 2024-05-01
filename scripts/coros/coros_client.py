@@ -209,7 +209,7 @@ class CorosClient:
                     logger.warning(f"uploading coros ${un_sync_id} {file_path}.")
                     upload_result = garminClient.upload_activity(file_path)
                     if upload_result.status_code == 202:
-                        logging.warning(f"Upload to coros {un_sync_id} success.")
+                        logging.warning(f"Upload coros to garmin {un_sync_id} success.")
                         self.update_db_status(db, un_sync_id)
                 except Exception as e:
                     # 解析上传失败原因，比如是否是因为重复
@@ -218,11 +218,12 @@ class CorosClient:
                         messages = responseData['detailedImportResult']['failures'][0]['messages']
                         code = messages[0]['code']
                         content = messages[0]['content']
-                        logging.warning(f"Upload to coros fail: {code}:{content}")
+                        logging.warning(f"Upload coros to garmin fail: {code}:{content}")
                         if '202' == str(code):
+                            logging.warning(f"update coros to garmin status for {code}:{content}")
                             self.update_db_status(db, un_sync_id)
                     except Exception as e:
-                        logging.warning(f"Upload to coros error inside: {e}")
+                        logging.warning(f"Upload coros to garmin error inside: {e}")
             except Exception as err:
                 print(err)
                 logging.warning(f"download coros activity fail: {err}")
