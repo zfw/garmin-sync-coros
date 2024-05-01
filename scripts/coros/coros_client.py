@@ -178,7 +178,7 @@ class CorosClient:
                 return item[1]
         return None
 
-    def uploadToGarmin(self, garminClient, db, labelId):
+    def uploadToGarmin(self, garminClient, db):
         all_activities = self.getAllActivities()
         if all_activities == None or len(all_activities) == 0:
             logger.warning("has no coros activities.")
@@ -194,6 +194,9 @@ class CorosClient:
         for un_sync_id in un_sync_id_list:
             try:
                 file_url = self.findUrlFromId(all_activities, str(un_sync_id))
+                if (file_url == None):
+                    continue 
+                
                 fileResponse = self.download(file_url)
                 file_path = os.path.join(COROS_FIT_DIR, f"{un_sync_id}.fit")
                 with open(file_path, "wb") as fb:
@@ -203,7 +206,7 @@ class CorosClient:
                     logger.warning(f"uploading garmin ${un_sync_id} {file_path}.")
                     upload_result = garminClient.upload_activity(file_path)
                     if upload_result.status_code == 202:
-                        logging.warning(f"Upload to garmin {labelId} success.")
+                        logging.warning(f"Upload to garmin {un_sync_id} success.")
                     try:
                         db.updateSyncStatus(un_sync_id, 'coros')
                         logger.warning(f"sync coros ${un_sync_id} {file_path} success.")

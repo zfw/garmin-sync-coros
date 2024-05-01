@@ -67,7 +67,7 @@ def getClient():
 # 将高驰运动记录导入到佳明
 def coros_to_garmin():
     garminClient, corosClient, db = getClient()
-    corosClient.uploadToGarmin(garminClient, db, "coros")
+    corosClient.uploadToGarmin(garminClient, db)
 
 
 if __name__ == "__main__":
