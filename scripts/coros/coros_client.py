@@ -187,12 +187,12 @@ class CorosClient:
         for activity in all_activities:
             activity_id = activity[0]
             db.saveActivity(activity_id, 'coros')
-            db.saveActivity(activity_id, 'coros')
 
         un_sync_id_list = db.getUnSyncActivity('coros')
         if un_sync_id_list == None or len(un_sync_id_list) == 0:
             logger.warning("has no un sync coros activities.")
             exit()
+        logger.warning(f"has {len(un_sync_id_list.size)} un sync coros activities.")
         for un_sync_id in un_sync_id_list:
             try:
                 file_url = self.find_url_from_id(all_activities, str(un_sync_id))

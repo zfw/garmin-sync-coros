@@ -1,12 +1,9 @@
 import os
 import sys
-import logging
 
 import sqlite3
 from sqlite_db import  SqliteDB
 from config import DB_DIR
-
-logger = logging.getLogger(__name__)
 
 class ActivityDB:
     
@@ -24,7 +21,6 @@ class ActivityDB:
         with SqliteDB(self._db_name) as db:
             exists_query_set = db.execute(exists_select_sql, (id, source)).fetchall()
             query_size = len(exists_query_set)
-            logger.warning(f"db saveActivity {id} {source} query_size: {query_size}")
             if query_size == 0:
                 db.execute('insert into activity_table (activity_id, activity_source) values (?, ?)', (id, source))
                 
@@ -34,7 +30,6 @@ class ActivityDB:
         with SqliteDB(self._db_name) as db:
             un_upload_result = db.execute(select_un_upload_sql, (source,)).fetchall() #注意：一个值时需要有最后面的,
             query_size = len(un_upload_result)
-            logger.warning(f"db getUnSyncActivity {source} query_size: {query_size}")
             if query_size == 0:
                 return None
             else:
