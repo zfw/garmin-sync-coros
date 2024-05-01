@@ -172,7 +172,8 @@ class CorosClient:
                 return all_urlList
             pageNumber += 100
         
-    def findUrlFromId(self, list, id): 
+    @staticmethod
+    def find_url_from_id(list, id): 
         for item in list:
             if item[0] == id:
                 return item[1]
@@ -193,7 +194,7 @@ class CorosClient:
             exit()
         for un_sync_id in un_sync_id_list:
             try:
-                file_url = self.findUrlFromId(all_activities, str(un_sync_id))
+                file_url = self.find_url_from_id(all_activities, str(un_sync_id))
                 if (file_url == None):
                     continue 
                 
@@ -207,13 +208,7 @@ class CorosClient:
                     upload_result = garminClient.upload_activity(file_path)
                     if upload_result.status_code == 202:
                         logging.warning(f"Upload to garmin {un_sync_id} success.")
-                    try:
-                        db.updateSyncStatus(un_sync_id, 'coros')
-                        logger.warning(f"sync coros ${un_sync_id} {file_path} success.")
-                    except Exception as err:
-                        print(err)
-                        db.updateExceptionSyncStatus(un_sync_id, 'coros')
-                        logger.warning(f"sync coros ${un_sync_id} exception.")
+                        self.update_db_status(db, un_sync_id)
                 except Exception as e:
                     # 解析上传失败原因，比如是否是因为重复
                     try:
@@ -222,11 +217,24 @@ class CorosClient:
                         code = messages[0]['code']
                         content = messages[0]['content']
                         logging.warning(f"Upload to garmin fail: {code}:{content}")
+                        if '202' == str(code):
+                            self.update_db_status(db, un_sync_id)
                     except Exception as e:
                         logging.warning(f"Upload to garmin error inside: {e}")
             except Exception as err:
                 print(err)
                 logging.warning(f"download garmin activity fail: {err}")
+    # 更新数据库同步状态            
+    @staticmethod
+    def update_db_status(db, un_sync_id):
+        try:
+            db.updateSyncStatus(un_sync_id, 'coros')
+            logger.warning(f"sync coros ${un_sync_id} success.")
+        except Exception as err:
+            print(err)
+            db.updateExceptionSyncStatus(un_sync_id, 'coros')
+            logger.warning(f"sync coros ${un_sync_id} exception.")
+                
 
 
 class CorosLoginError(Exception):
