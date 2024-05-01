@@ -26,12 +26,12 @@ SYNC_CONFIG = {
 }
 
 
-def init(coros_db):
+def init(activity_db):
     ## 判断RQ数据库是否存在
-    print(os.path.join(DB_DIR, coros_db.db_name))
-    if not os.path.exists(os.path.join(DB_DIR, coros_db.db_name)):
+    print(os.path.join(DB_DIR, activity_db.db_name))
+    if not os.path.exists(os.path.join(DB_DIR, activity_db.db_name)):
         ## 初始化建表
-        coros_db.initDB()
+        activity_db.initDB()
     if not os.path.exists(GARMIN_FIT_DIR):
         os.mkdir(GARMIN_FIT_DIR)
     if not os.path.exists(COROS_FIT_DIR):
@@ -46,11 +46,11 @@ def getClient():
             SYNC_CONFIG[k] = v
 
     ## db 名称
-    db_name = "garmin.db"
+    db_name = "activity.db"
     ## 建立DB链接
-    garmin_db = ActivityDB(db_name)
+    activity_db = ActivityDB(db_name)
     ## 初始化DB位置和下载文件位置
-    init(garmin_db)
+    init(activity_db)
 
     GARMIN_EMAIL = SYNC_CONFIG["GARMIN_EMAIL"]
     GARMIN_PASSWORD = SYNC_CONFIG["GARMIN_PASSWORD"]
@@ -61,7 +61,7 @@ def getClient():
     COROS_PASSWORD = SYNC_CONFIG["COROS_PASSWORD"]
     corosClient = CorosClient(COROS_EMAIL, COROS_PASSWORD)
 
-    return garminClient, corosClient, garmin_db
+    return garminClient, corosClient, activity_db
 
 
 # 将佳明运动记录导入到高驰

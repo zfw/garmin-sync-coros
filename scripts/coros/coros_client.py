@@ -206,10 +206,10 @@ class CorosClient:
                     fb.write(fileResponse.data)
                 
                 try:
-                    logger.warning(f"uploading garmin ${un_sync_id} {file_path}.")
+                    logger.warning(f"uploading coros ${un_sync_id} {file_path}.")
                     upload_result = garminClient.upload_activity(file_path)
                     if upload_result.status_code == 202:
-                        logging.warning(f"Upload to garmin {un_sync_id} success.")
+                        logging.warning(f"Upload to coros {un_sync_id} success.")
                         self.update_db_status(db, un_sync_id)
                 except Exception as e:
                     # 解析上传失败原因，比如是否是因为重复
@@ -218,14 +218,14 @@ class CorosClient:
                         messages = responseData['detailedImportResult']['failures'][0]['messages']
                         code = messages[0]['code']
                         content = messages[0]['content']
-                        logging.warning(f"Upload to garmin fail: {code}:{content}")
+                        logging.warning(f"Upload to coros fail: {code}:{content}")
                         if '202' == str(code):
                             self.update_db_status(db, un_sync_id)
                     except Exception as e:
-                        logging.warning(f"Upload to garmin error inside: {e}")
+                        logging.warning(f"Upload to coros error inside: {e}")
             except Exception as err:
                 print(err)
-                logging.warning(f"download garmin activity fail: {err}")
+                logging.warning(f"download coros activity fail: {err}")
     # 更新数据库同步状态            
     @staticmethod
     def update_db_status(db, un_sync_id):
