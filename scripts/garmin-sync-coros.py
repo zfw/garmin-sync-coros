@@ -60,7 +60,7 @@ def coros_to_garmin():
     corosClient.uploadToGarmin(garminClient, db)
     
 if __name__ == "__main__":
-    arg = sys.argv[1]
+    arg = sys.argv[1] if len(sys.argv) > 2 else 'GARMIN'
     logger.warning(f"RUNNING MODE: {arg}")
     if arg == 'COROS':
         coros_to_garmin()
