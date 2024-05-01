@@ -196,6 +196,8 @@ class CorosClient:
             try:
                 file_url = self.find_url_from_id(all_activities, str(un_sync_id))
                 if (file_url == None):
+                    # 未找到对应的下载链接也视为同步
+                    self.update_db_status(db, un_sync_id)
                     continue 
                 
                 fileResponse = self.download(file_url)
