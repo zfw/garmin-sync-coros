@@ -45,7 +45,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
         if: steps.pip-cache.outputs.cache-hit != 'true'
-      - name: Run Garmin Sync
+      - name: Run Garmin or Coros Sync
         run: |
           python scripts/garmin-sync-coros.py COROS
       - name: Push new cookie
