@@ -47,7 +47,7 @@ jobs:
         if: steps.pip-cache.outputs.cache-hit != 'true'
       - name: Run Garmin or Coros Sync
         run: |
-          python scripts/garmin-sync-coros.py COROS
+          python scripts/garmin-sync-coros.py GARMIN
       - name: Push new cookie
         run: |
           git config --local user.email "${{ env.GITHUB_EMAIL }}"
