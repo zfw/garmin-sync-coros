@@ -8,8 +8,8 @@ on:
             default: 'huawei'
 
 env:
-  GITHUB_NAME: ${{ secrets.GIT_NAME }}
-  GITHUB_EMAIL: ${{ secrets.GIT_EMAIL }}
+  GITHUB_NAME: zfw
+  GITHUB_EMAIL: zfwzelda@gmail.com
   ## 佳明配置
   GARMIN_AUTH_DOMAIN: ${{ secrets.GARMIN_AUTH_DOMAIN }}
   GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
@@ -53,7 +53,7 @@ jobs:
         if: steps.pip-cache.outputs.cache-hit != 'true'
       - name: Run Garmin or Coros Sync
         run: |
-          python scripts/garmin-sync-coros.py GARMIN
+          python scripts/garmin-sync-coros.py COROS
       - name: Push new cookie
         run: |
           git config --local user.email "${{ env.GITHUB_EMAIL }}"
